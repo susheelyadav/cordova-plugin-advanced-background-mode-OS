@@ -64,9 +64,14 @@
         <config-file target="res/xml/config.xml" parent="/*">
             <preference name="KeepRunning" value="true" />
         </config-file>
+            
+        <preference name="TYPE" />
+        <config-file target="res/values/strings.xml" parent="/*">
+            <string name="foregroundServiceType">$TYPE</string>
+        </config-file> 
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <service android:exported="false" android:foregroundServiceType="camera|connectedDevice|dataSync|health|location|mediaPlayback|mediaProjection|microphone|phoneCall|remoteMessaging|shortService|specialUse" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
+            <service android:exported="false" android:foregroundServiceType="@string/foregroundServiceType" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
