@@ -27,6 +27,8 @@
         <clobbers target="plugin.backgroundMode" />
     </js-module>
 
+    <preference name="TYPE" />
+
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
@@ -64,11 +66,6 @@
         <config-file target="res/xml/config.xml" parent="/*">
             <preference name="KeepRunning" value="true" />
         </config-file>
-            
-        <preference name="TYPE" />
-        <config-file target="res/values/strings.xml" parent="/*">
-            <string name="foregroundServiceType">$TYPE</string>
-        </config-file> 
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <service android:exported="false" android:foregroundServiceType="@string/foregroundServiceType" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
@@ -80,7 +77,6 @@
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_LOCATION"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
