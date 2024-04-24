@@ -1,42 +1,88 @@
-This is a fork of [a great plugin by katzer](https://github.com/katzer/cordova-plugin-background-mode/). It aims to keep up-to-date with Android changes while also providing more features.
-
-Cordova Background Plugin [![npm version](https://badge.fury.io/js/cordova-plugin-background-mode.svg)](http://badge.fury.io/js/cordova-plugin-background-mode) [![Build Status](https://travis-ci.org/katzer/cordova-plugin-background-mode.svg?branch=master)](https://travis-ci.org/katzer/cordova-plugin-background-mode) [![codebeat badge](https://codebeat.co/badges/49709283-b313-4ced-8630-f520baaec7b5)](https://codebeat.co/projects/github-com-katzer-cordova-plugin-background-mode)
+Cordova Background Plugin
 =========================
+![Maintenance](https://img.shields.io/maintenance/yes/2020)
+[![npm version](https://badge.fury.io/js/cordova-plugin-advanced-background-mode.svg)](https://badge.fury.io/js/cordova-plugin-advanced-background-mode)
 
-Plugin for the [Cordova][cordova] framework to perform infinite background execution.
+Plugin for the [Cordova](https://cordova.apache.org) framework to perform infinite background execution.
 
 Most mobile operating systems are multitasking capable, but most apps dont need to run while in background and not present for the user. Therefore they pause the app in background mode and resume the app before switching to foreground mode.
-The system keeps all network connections open while in background, but does not deliver the data until the app resumes.
+The system keeps all network connections ope.githubn while in background, but does not deliver the data until the app resumes.
 
-#### Store Compliance
+<!-- DONATE -->
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LMX5TSQVMNMU6&source=url)
+
+This and other Open-Source Cordova Plugins are developed in my free time.
+To help ensure this plugin is kept updated, new features are added and bugfixes are implemented quickly, please donate a couple of dollars (or a little more if you can stretch) as this will help me to afford to dedicate time to its maintenance.
+Please consider donating if you're using this plugin in an app that makes you money, if you're being paid to make the app, if you're asking for new features or priority bug fixes.
+<!-- END DONATE -->
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Content**
+
+- [Original Plugin](#original-plugin)
+- [Store Compliance](#store-compliance)
+- [Supported Platforms](#supported-platforms)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Both Platforms](#both-platforms)
+    - [Enable the background mode](#enable-the-background-mode)
+    - [Check if running in background](#check-if-running-in-background)
+    - [Listen for events](#listen-for-events)
+  - [Android specifics](#android-specifics)
+    - [Transit between application states](#transit-between-application-states)
+    - [Back button](#back-button)
+    - [Exclude from Task list](#exclude-from-task-list)
+    - [Include to Task list](#include-to-task-list)
+    - [Detect screen status](#detect-screen-status)
+    - [Unlock and wake-up](#unlock-and-wake-up)
+    - [Notification](#notification)
+- [Quirks](#quirks)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# Original Plugin
+
+This Plugin is a fork of [this](https://github.com/katzer/cordova-plugin-background-mode) absolutely awesome Plugin by Katzer!
+Because it is unmainted, i decided to create this and keep it updated.
+
+# Store Compliance
 Infinite background tasks are not official supported on most mobile operation systems and thus not compliant with public store vendors. A successful submssion isn't garanteed.
 
 Use the plugin by your own risk!
 
 
-## Supported Platforms
+# Supported Platforms
 - __Android/Amazon FireOS__
 - __Browser__
 - __iOS__
 - __Windows__ _(see #222)_
 
 
-## Installation
-The plugin can be installed via [Cordova-CLI][CLI] and will be publicly available on [NPM][npm] eventually.
+# Installation
+The plugin can be installed via [Cordova-CLI](http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface) and is publicly available on [NPM](https://www.npmjs.com/package/cordova-plugin-advanced-background-mode).
 
 Execute from the projects root folder:
 
-    $ cordova plugin add https://bitbucket.org/TheBosZ/cordova-plugin-run-in-background
+    $ cordova plugin add cordova-plugin-advanced-background-mode
 
 
-## Usage
+# Usage
 The plugin creates the object `cordova.plugins.backgroundMode` and is accessible after the *deviceready* event has been fired.
+It also includes an Ionic Wrapper
 
-```js
+```ts
 document.addEventListener('deviceready', function () {
     // cordova.plugins.backgroundMode is now available
 }, false);
+
+<!-- Ionic Wrapper -->
+import BackgroundMode from 'cordova-plugin-advanced-background-mode';
 ```
+
+## Both Platforms
 
 ### Enable the background mode
 The plugin is not enabled by default. Once it has been enabled the mode becomes active if the app moves to background.
@@ -79,9 +125,7 @@ cordova.plugins.backgroundMode.un('EVENT', function);
 ## Android specifics
 
 ### Transit between application states
-Android allows to programmatically move from foreground to background or vice versa. 
-
-Note: starting with Android 10, you must request the "Draw on Top" permission from the user or the call to `moveToForeground` will silently fail. You can request it with `cordova.plugins.backgroundMode.requestForegroundPermission();`. This permission isn't necessary for `moveToBackground`
+Android allows to programmatically move from foreground to background or vice versa.
 
 ```js
 cordova.plugins.backgroundMode.moveToBackground();
@@ -96,18 +140,25 @@ Override the back button on Android to go to background instead of closing the a
 cordova.plugins.backgroundMode.overrideBackButton();
 ```
 
-### Recent task list
-Exclude the app from the recent task list works on Android 5.0+.
+### Exclude from Task list
+Exclude the app from the recent task list (works on Android 5.0+).
 
 ```js
 cordova.plugins.backgroundMode.excludeFromTaskList();
+```
+
+### Include to Task list
+Include the app to the recent task list (works on Android 5.0+).
+
+```js
+cordova.plugins.backgroundMode.includeToTaskList();
 ```
 
 ### Detect screen status
 The method works async instead of _isActive()_ or _isEnabled()_.
 
 ```js
-cordova.plugins.backgroundMode.isScreenOff(function(bool) {
+cordova.plugins.backgroundMode.isScreenOff((bool) => {
     ...
 });
 ```
@@ -122,37 +173,6 @@ cordova.plugins.backgroundMode.wakeUp();
 cordova.plugins.backgroundMode.unlock();
 ```
 
-### Request to disable battery optimizations
-Starting in Android 8, apps can be put to sleep to conserve battery. When this happens (usually after 5 minutes or so), the background task is killed. This will cause things like MQTT connections to break.
-
-This method will show a permission prompt for the user (only if the app hasn't been granted permission) to ignore the optimization.
-
-```js
-cordova.plugins.backgroundMode.disableBatteryOptimizations();
-```
-
-You can also open the battery optimization settings menu directly, and get the user to set it manually. This may be a better option for devices which may ignore the prompt above.
-
-```js
-cordova.plugins.backgroundMode.openBatteryOptimizationsSettings();
-```
-
-To check if battery optimizations are disabled for the app:
-
-```js
-cordova.plugins.backgroundMode.isIgnoringBatteryOptimizations(function(isIgnoring) {
-    ...
-})
-```
-
-Additionally, you may find that your JS code begins to run less frequently, or not at all while in the background. This can be due to the webview slowing down its execution due to being in the background. The `disableWebViewOptimizations` function can prevent that, but it's important that it is run _after_ the app goes to the background.
-
-```js
-cordova.plugins.backgroundMode.on('activate', function() {
-    cordova.plugins.backgroundMode.disableWebViewOptimizations();
-});
-```
-
 ### Notification
 To indicate that the app is executing tasks in background and being paused would disrupt the user, the plug-in has to create a notification while in background - like a download progress bar.
 
@@ -163,19 +183,11 @@ The title, text and icon for that notification can be customized as below. Also,
 cordova.plugins.backgroundMode.setDefaults({
     title: String,
     text: String,
-    subText: String, // see https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setSubText(java.lang.CharSequence)
-    icon: 'icon', // this will look for icon.png in platforms/android/res/drawable|mipmap
-    color: String, // hex format like 'F14F4D'
+    icon: 'icon' // this will look for icon.png in platforms/android/res/drawable|mipmap
+    color: String // hex format like 'F14F4D'
     resume: Boolean,
     hidden: Boolean,
-    bigText: Boolean,
-    channelName: String, // Shown when the user views the app's notification settings
-    channelDescription: String, // Shown when the user views the channel's settings
-    allowClose: Boolean, // add a "Close" action to the notification
-    closeIcon: 'power', // An icon shown for the close action
-    closeTitle: 'Close', // The text for the close action
-    showWhen: Boolean, //(Default: true) Show the time since the notification was created
-    visibility: String, // Android only: one of 'private' (default), 'public' or 'secret' (see https://developer.android.com/reference/android/app/Notification.Builder.html#setVisibility(int))
+    bigText: Boolean
 })
 ```
 
@@ -184,7 +196,7 @@ To modify the currently displayed notification
 cordova.plugins.backgroundMode.configure({ ... });
 ```
 
-__Note:__ All properties are optional - only override the things you need to.
+**Note:** All properties are optional - only override the things you need to.
 
 #### Run in background without notification
 In silent mode the plugin will not display a notification - which is not the default. Be aware that Android recommends adding a notification otherwise the OS may pause the app.
@@ -194,20 +206,20 @@ cordova.plugins.backgroundMode.setDefaults({ silent: true });
 ```
 
 
-## Quirks
+# Quirks
 
 Various APIs like playing media or tracking GPS position in background might not work while in background even the background mode is active. To fix such issues the plugin provides a method to disable most optimizations done by Android/CrossWalk.
 
 ```js
 cordova.plugins.backgroundMode.on('activate', function() {
-   cordova.plugins.backgroundMode.disableWebViewOptimizations();
+   cordova.plugins.backgroundMode.disableWebViewOptimizations(); 
 });
 ```
 
-__Note:__ Calling the method led to increased resource and power consumption.
+**Note:** Calling the method led to increased resource and power consumption.
 
 
-## Contributing
+# Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -216,19 +228,6 @@ __Note:__ Calling the method led to increased resource and power consumption.
 5. Create new Pull Request
 
 
-## License
+# Changelog
 
-This software is released under the [Apache 2.0 License][apache2_license].
-
-Made with :yum: from Leipzig
-
-? 2017 [appPlant GmbH][appplant] & [meshfields][meshfields]
-
-
-[cordova]: https://cordova.apache.org
-[CLI]: http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface
-[NPM]: ???
-[changelog]: CHANGELOG.md
-[apache2_license]: http://opensource.org/licenses/Apache-2.0
-[appplant]: http://appplant.de
-[meshfields]: http://meshfields.de
+The full Changelog is available [here](CHANGELOG.md).

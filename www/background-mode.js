@@ -104,7 +104,7 @@ exports.getSettings = function()
  *
  * @return [ Void ]
  */
-exports.setDefaults = function (overrides)
+exports.setDefaults = function (overrides, fn)
 {
     var defaults = this.getDefaults();
 
@@ -118,7 +118,7 @@ exports.setDefaults = function (overrides)
 
     if (this._isAndroid)
     {
-        cordova.exec(null, null, 'BackgroundMode', 'configure', [defaults, false]);
+        cordova.exec((fn || function () {}), null, 'BackgroundMode', 'configure', [defaults, false]);
     }
 };
 
@@ -178,38 +178,6 @@ exports.disableBatteryOptimizations = function()
 };
 
 /**
- * Opens the system settings screen for battery optimization, allowing the user to
- * manually change the optimization settings.
- *
- * @return [ Void ]
- */
-exports.openBatteryOptimizationsSettings = function()
-{
-    if (this._isAndroid)
-    {
-        cordova.exec(null, null, 'BackgroundModeExt', 'batterysettings', []);
-    }
-};
-
-/**
- * Opens the system settings screen for battery optimization, allowing the user to
- * manually change the optimization settings.
- *
- * @return [ Void ]
- */
-exports.isIgnoringBatteryOptimizations = function(callback)
-{
-    if (this._isAndroid)
-    {
-        cordova.exec(callback, null, 'BackgroundModeExt', 'optimizationstatus', []);
-    }
-    else
-    {
-        callback(true);
-    }
-};
-
-/**
  * Opens the system settings dialog where the user can tweak or turn off any
  * custom app start settings added by the manufacturer if available.
  *
@@ -253,17 +221,6 @@ exports.moveToForeground = function()
 };
 
 /**
- * Requests permission to "draw on top" which is necessary for the "moveToForeground" method in Android 10+
- *
- * @return [ Void ]
- */
-exports.requestForegroundPermission = function() {
-    if (this._isAndroid) {
-        cordova.exec(null, null, 'BackgroundModeExt', 'requestTopPermissions', []);
-    }
-};
-
-/**
  * Exclude the app from the recent tasks list (Android only).
  *
  * @return [ Void ]
@@ -272,7 +229,20 @@ exports.excludeFromTaskList = function()
 {
     if (this._isAndroid)
     {
-        cordova.exec(null, null, 'BackgroundModeExt', 'tasklist', []);
+        cordova.exec(null, null, 'BackgroundModeExt', 'tasklistExclude', []);
+    }
+};
+
+/**
+ * Include the app back to the recent tasks list (Android only).
+ *
+ * @return [ Void ]
+ */
+exports.includeToTaskList = function()
+{
+    if (this._isAndroid)
+    {
+        cordova.exec(null, null, 'BackgroundModeExt', 'tasklistInclude', []);
     }
 };
 
@@ -451,24 +421,16 @@ exports._isActive = false;
  *
  * Default values of all available options.
  */
-
-exports._defaults = {
-    title:              'App is running in background',
-    text:               'Doing heavy tasks.',
-    subText:            '',
-    bigText:            false,
-    resume:             true,
-    silent:             false,
-    hidden:             true,
-    color:              undefined,
-    icon:               'icon',
-    channelName:        'cordova-plugin-background-mode',
-    channelDescription: 'cordova-plugin-background-moden notification',
-    allowClose:         false,
-    closeIcon:          'power',
-    closeTitle:         'Close',
-    showWhen:           true,
-    visibility:         undefined
+exports._defaults =
+{
+    title:   'App is running in background',
+    text:    'Doing heavy tasks.',
+    bigText: false,
+    resume:  true,
+    silent:  false,
+    hidden:  true,
+    color:   undefined,
+    icon:    'icon'
 };
 
 /**
