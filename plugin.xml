@@ -66,7 +66,7 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <service android:exported="false" android:foregroundServiceType="camera|connectedDevice|dataSync|health|location|mediaPlayback|mediaProjection|microphone|phoneCall|remoteMessaging|shortService|specialUse|systemExempted" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
+            <service android:exported="false" android:foregroundServiceType="camera|connectedDevice|dataSync|health|location|mediaPlayback|mediaProjection|microphone|phoneCall|remoteMessaging|shortService|specialUse" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -83,8 +83,6 @@
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"/>
             <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> 
         </config-file>
 
