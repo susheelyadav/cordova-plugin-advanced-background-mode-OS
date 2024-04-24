@@ -27,8 +27,6 @@
         <clobbers target="plugin.backgroundMode" />
     </js-module>
 
-    <preference name="TYPE" />
-
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
