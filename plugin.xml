@@ -66,12 +66,25 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <service android:name="de.einfachhans.BackgroundMode.ForegroundService" />
+            <service android:exported="false" android:foregroundServiceType="camera|connectedDevice|dataSync|health|location|mediaPlayback|mediaProjection|microphone|phoneCall|remoteMessaging|shortService|specialUse|systemExempted" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.WAKE_LOCK" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_LOCATION"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"/>
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"/>
             <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> 
         </config-file>
 
