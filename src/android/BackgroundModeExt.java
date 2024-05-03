@@ -1,25 +1,4 @@
-/*
- Copyright 2013 SebastiÃ¡n Katzer
-
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
- */
-
-package de.appplant.cordova.plugin.background;
+package de.einfachhans.BackgroundMode;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -34,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
-import android.provider.Settings;
 import android.view.View;
 
 import org.apache.cordova.CallbackContext;
@@ -56,7 +34,6 @@ import static android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 import static android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS;
-import static android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS;
 import static android.view.WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON;
 import static android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
 import static android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
@@ -92,12 +69,6 @@ public class BackgroundModeExt extends CordovaPlugin {
             case "battery":
                 disableBatteryOptimizations();
                 break;
-            case "batterysettings":
-                openBatterySettings();
-                break;
-            case "optimizationstatus":
-                isIgnoringBatteryOptimizations(callback);
-                break;
             case "webview":
                 disableWebViewOptimizations();
                 break;
@@ -110,11 +81,11 @@ public class BackgroundModeExt extends CordovaPlugin {
             case "foreground":
                 moveToForeground();
                 break;
-            case "requestTopPermissions":
-                requestTopPermissions();
+            case "tasklistExclude":
+                setExcludeFromRecents(true);
                 break;
-            case "tasklist":
-                excludeFromTaskList();
+            case "tasklistInclude":
+                setExcludeFromRecents(false);
                 break;
             case "dimmed":
                 isDimmed(callback);
@@ -144,8 +115,11 @@ public class BackgroundModeExt extends CordovaPlugin {
      */
     private void moveToBackground()
     {
-        Activity  app = getApp();
-        app.moveTaskToBack(true);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+
+        intent.addCategory(Intent.CATEGORY_HOME);
+
+        getApp().startActivity(intent);
     }
 
     /**
@@ -174,19 +148,7 @@ public class BackgroundModeExt extends CordovaPlugin {
                 try {
                     Thread.sleep(1000);
                     getApp().runOnUiThread(() -> {
-                        //  View view = webView.getEngine().getView();
-                        // support for capacitor
-                        View view = null;
-
-                        try{
-
-                            view = webView.getEngine().getView();
-
-                        }catch(Exception e){
-
-                            view = webView.getView();
-
-                        }
+                        View view = webView.getEngine().getView();
 
                         try {
                             Class.forName("org.crosswalk.engine.XWalkCordovaView")
@@ -227,53 +189,6 @@ public class BackgroundModeExt extends CordovaPlugin {
         intent.setData(Uri.parse("package:" + pkgName));
 
         cordova.getActivity().startActivity(intent);
-    }
-
-    /**
-     * Opens the Battery Optimization settings screen
-     */
-    private void openBatterySettings()
-    {
-        if (SDK_INT < M)
-            return;
-
-        Activity activity = cordova.getActivity();
-        Intent intent = new Intent(ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-
-        cordova.getActivity().startActivity(intent);
-    }
-
-    /**
-     * Opens the Battery Optimization settings screen
-     *
-     * @param callback The callback to invoke.
-     */
-    private void isIgnoringBatteryOptimizations(CallbackContext callback)
-    {
-        if (SDK_INT < M)
-            return;
-
-        Activity activity  = cordova.getActivity();
-        String pkgName     = activity.getPackageName();
-        PowerManager pm    = (PowerManager)getService(POWER_SERVICE);
-        boolean isIgnoring = pm.isIgnoringBatteryOptimizations(pkgName);
-        PluginResult res   = new PluginResult(Status.OK, isIgnoring);
-
-        callback.sendPluginResult(res);
-    }
-
-     private void requestTopPermissions() {
-        if (SDK_INT >= M) {
-
-            Activity activity = cordova.getActivity();
-            if (Settings.canDrawOverlays(activity.getApplicationContext())) {
-                return;
-            }
-
-            String pkgName    = activity.getPackageName();
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + pkgName));
-            activity.startActivity(intent);
-        }
     }
 
     /**
@@ -329,10 +244,10 @@ public class BackgroundModeExt extends CordovaPlugin {
     }
 
     /**
-     * Excludes the app from the recent tasks list.
+     * Excludes or Includes the app from the recent tasks list.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void excludeFromTaskList()
+    private void setExcludeFromRecents(boolean value)
     {
         ActivityManager am = (ActivityManager) getService(ACTIVITY_SERVICE);
 
@@ -344,7 +259,7 @@ public class BackgroundModeExt extends CordovaPlugin {
         if (tasks == null || tasks.isEmpty())
             return;
 
-        tasks.get(0).setExcludeFromRecents(true);
+        tasks.get(0).setExcludeFromRecents(value);
     }
 
     /**

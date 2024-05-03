@@ -104,7 +104,7 @@ exports.getSettings = function()
  *
  * @return [ Void ]
  */
-exports.setDefaults = function (overrides)
+exports.setDefaults = function (overrides, fn)
 {
     var defaults = this.getDefaults();
 
@@ -118,7 +118,7 @@ exports.setDefaults = function (overrides)
 
     if (this._isAndroid)
     {
-        cordova.exec(null, null, 'BackgroundMode', 'configure', [defaults, false]);
+        cordova.exec((fn || function () {}), null, 'BackgroundMode', 'configure', [defaults, false]);
     }
 };
 
@@ -140,7 +140,7 @@ exports.configure = function (options)
 
     if (!this._isActive)
     {
-       // console.log('BackgroundMode is not active, skipped...');
+        console.log('BackgroundMode is not active, skipped...');
         return;
     }
 
@@ -229,7 +229,20 @@ exports.excludeFromTaskList = function()
 {
     if (this._isAndroid)
     {
-        cordova.exec(null, null, 'BackgroundModeExt', 'tasklist', []);
+        cordova.exec(null, null, 'BackgroundModeExt', 'tasklistExclude', []);
+    }
+};
+
+/**
+ * Include the app back to the recent tasks list (Android only).
+ *
+ * @return [ Void ]
+ */
+exports.includeToTaskList = function()
+{
+    if (this._isAndroid)
+    {
+        cordova.exec(null, null, 'BackgroundModeExt', 'tasklistInclude', []);
     }
 };
 

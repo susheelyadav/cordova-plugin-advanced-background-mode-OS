@@ -1,48 +1,22 @@
-/*
- Copyright 2013 SebastiÃ¡n Katzer
+package de.einfachhans.BackgroundMode;
 
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
- */
-
-package de.appplant.cordova.plugin.background;
-
-import android.Manifest;
 import android.app.Activity;
-import android.content.*;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
+import org.apache.cordova.PluginResult.Status;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.appplant.cordova.plugin.background.ForegroundService.ForegroundBinder;
+import de.einfachhans.BackgroundMode.ForegroundService.ForegroundBinder;
 
 import static android.content.Context.BIND_AUTO_CREATE;
-import static de.appplant.cordova.plugin.background.BackgroundModeExt.clearKeyguardFlags;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import static de.einfachhans.BackgroundMode.BackgroundModeExt.clearKeyguardFlags;
 
 public class BackgroundMode extends CordovaPlugin {
 
@@ -84,24 +58,6 @@ public class BackgroundMode extends CordovaPlugin {
         }
     };
 
-    @Override
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-        super.initialize(cordova, webView);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.backgroundmode.close" + cordova.getContext().getPackageName());
-        cordova.getActivity().registerReceiver(receiver, filter);
-
-    }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            cordova.getActivity().finish();
-
-        }
-    };
-
     /**
      * Executes the request.
      *
@@ -122,6 +78,8 @@ public class BackgroundMode extends CordovaPlugin {
         {
             case "configure":
                 configure(args.optJSONObject(0), args.optBoolean(1));
+                PluginResult res = new PluginResult(Status.OK);
+                callback.sendPluginResult(res);
                 break;
             case "enable":
                 enableMode();
@@ -263,11 +221,6 @@ public class BackgroundMode extends CordovaPlugin {
 
         if (isDisabled || isBind)
             return;
-        if (Build.VERSION.SDK_INT >= 33) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
-            }
-        }
 
         Intent intent = new Intent(context, ForegroundService.class);
 
@@ -312,13 +265,13 @@ public class BackgroundMode extends CordovaPlugin {
         Boolean active   = event == Event.ACTIVATE;
 
         String str = String.format("%s._setActive(%b)",
-            JS_NAMESPACE, active);
+                JS_NAMESPACE, active);
 
         str = String.format("%s;%s.on('%s', %s)",
-            str, JS_NAMESPACE, eventName, params);
+                str, JS_NAMESPACE, eventName, params);
 
         str = String.format("%s;%s.fireEvent('%s',%s);",
-            str, JS_NAMESPACE, eventName, params);
+                str, JS_NAMESPACE, eventName, params);
 
         final String js = str;
 
