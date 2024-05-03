@@ -1,21 +1,18 @@
 {
-  "name": "cordova-plugin-advanced-background-mode",
-  "version": "1.1.1",
+  "name": "cordova-plugin-background-mode",
+  "version": "0.7.3",
   "description": "Prevent apps from going to sleep in background.",
   "cordova": {
-    "id": "cordova-plugin-advanced-background-mode",
+    "id": "cordova-plugin-background-mode",
     "platforms": [
       "ios",
       "android",
       "browser"
     ]
   },
-  "scripts": {
-    "doctoc": "doctoc readme.md --github --title '**Table of Content**' --maxlevel 3"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EinfachHans/cordova-plugin-advanced-background-mode"
+    "url": "git+https://github.com/katzer/cordova-plugin-background-mode.git"
   },
   "keywords": [
     "appplant",
@@ -35,12 +32,10 @@
       "version": ">=16"
     }
   ],
-  "author": "EinfachHans",
+  "author": "Sebastián Katzer",
   "license": "Apache 2.0",
-  "main": "./src/ionic/index.js",
-  "types": "./src/ionic/index.d.ts",
   "bugs": {
-    "url": "https://github.com/EinfachHans/cordova-plugin-advanced-background-mode/issues"
+    "url": "https://github.com/katzer/cordova-plugin-background-mode/issues"
   },
-  "homepage": "https://github.com/EinfachHans/cordova-plugin-advanced-background-mode"
+  "homepage": "https://github.com/katzer/cordova-plugin-background-mode#readme"
 }

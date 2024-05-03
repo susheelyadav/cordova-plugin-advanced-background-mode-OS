@@ -1,4 +1,25 @@
-package de.einfachhans.BackgroundMode;
+/*
+ Copyright 2013 Sebastián Katzer
+
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
+
+package de.appplant.cordova.plugin.background;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -8,14 +29,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.app.NotificationChannel;
-import android.content.pm.ServiceInfo;
 
 import org.json.JSONObject;
 
@@ -111,7 +131,7 @@ public class ForegroundService extends Service {
 
         if (!isSilent) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(NOTIFICATION_ID,  makeNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+                startForeground(NOTIFICATION_ID, makeNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
             } else {
                 startForeground(NOTIFICATION_ID, makeNotification());
             }
@@ -205,13 +225,9 @@ public class ForegroundService extends Service {
 
         if (intent != null && settings.optBoolean("resume")) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            // PendingIntent contentIntent = PendingIntent.getActivity(
-            //         context, NOTIFICATION_ID, intent,
-            //         PendingIntent.FLAG_UPDATE_CURRENT);
-            
-            PendingIntent contentIntent = PendingIntent.getActivity( 
-                context, NOTIFICATION_ID, intent, 
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+            PendingIntent contentIntent = PendingIntent.getActivity(
+                    context, NOTIFICATION_ID, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
             notification.setContentIntent(contentIntent);
@@ -295,8 +311,7 @@ public class ForegroundService extends Service {
             return;
 
         try {
-            //int aRGB = Integer.parseInt(hex, 16) + 0xFF000000;
-            int aRGB = Color.parseColor(hex);
+            int aRGB = Integer.parseInt(hex, 16) + 0xFF000000;
             notification.setColor(aRGB);
         } catch (Exception e) {
             e.printStackTrace();

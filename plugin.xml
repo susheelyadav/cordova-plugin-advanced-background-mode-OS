@@ -2,15 +2,20 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-advanced-background-mode"
-        version="1.1.1">
+        id="cordova-plugin-background-mode"
+        version="0.7.3">
 
     <name>BackgroundMode</name>
+
     <description>Prevent apps from going to sleep in background.</description>
-    <repo>https://github.com/EinfachHans/cordova-plugin-advanced-background-mode</repo>
-    <keywords>cordova, background, mode</keywords>
+
+    <repo>https://github.com/katzer/cordova-plugin-background-mode.git</repo>
+
+    <keywords>appplant, background</keywords>
+
     <license>Apache 2.0</license>
-    <author>EinfachHans</author>
+
+    <author>Sebastián Katzer</author>
 
     <!-- dependencies -->
     <dependency id="cordova-plugin-device" />
@@ -54,10 +59,10 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="BackgroundMode">
-                <param name="android-package" value="de.einfachhans.BackgroundMode.BackgroundMode"/>
+                <param name="android-package" value="de.appplant.cordova.plugin.background.BackgroundMode"/>
             </feature>
             <feature name="BackgroundModeExt">
-                <param name="android-package" value="de.einfachhans.BackgroundMode.BackgroundModeExt"/>
+                <param name="android-package" value="de.appplant.cordova.plugin.background.BackgroundModeExt"/>
             </feature>
         </config-file>
 
@@ -66,35 +71,26 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <service android:exported="false" android:foregroundServiceType="shortService|specialUse" android:name="de.einfachhans.BackgroundMode.ForegroundService" />
+            <service android:name="de.appplant.cordova.plugin.background.ForegroundService" android:foregroundServiceType="mediaPlayback" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.WAKE_LOCK" />
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_LOCATION"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
-            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
-            <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> 
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
         </config-file>
 
         <source-file
             src="src/android/BackgroundMode.java"
-            target-dir="src/de/einfachhans/BackgroundMode" />
+            target-dir="src/de/appplant/cordova/plugin/background" />
 
         <source-file
             src="src/android/BackgroundModeExt.java"
-            target-dir="src/de/einfachhans/BackgroundMode" />
+            target-dir="src/de/appplant/cordova/plugin/background" />
 
         <source-file
             src="src/android/ForegroundService.java"
-            target-dir="src/de/einfachhans/BackgroundMode" />
+            target-dir="src/de/appplant/cordova/plugin/background" />
     </platform>
 
     <!-- browser -->
