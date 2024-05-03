@@ -140,7 +140,7 @@ exports.configure = function (options)
 
     if (!this._isActive)
     {
-        console.log('BackgroundMode is not active, skipped...');
+       // console.log('BackgroundMode is not active, skipped...');
         return;
     }
 
